@@ -11,12 +11,22 @@ Entities
 - movie
   -- title
   -- quantity
-  -- available_quantity
+  -- available
+  -- price_rental
 
 - customer
   -- name
   -- document
 
+- rent
+  -- customer
+  -- movies
+  -- total
+  -- rent_date
+  -- deliver_date
+
 useCases
+-- getQuantityMovieRented
+-- getMovieRentedByCustomer
 -- customerRentMovie
 -- customerDeliverMovie
