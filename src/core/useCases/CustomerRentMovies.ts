@@ -1,23 +1,18 @@
+import Customer from '../entity/Customer';
+import Movie from '../entity/Movie';
 import Rent from '../entity/Rent';
 
 export default class CustomerRentMovie {
-  customer: { name: string; document: string };
-  movies: { id: string }[];
-  constructor(rent: {
-    name: string;
-    document: string;
-    movies: { title: string }[];
-  }) {}
+  constructor(private customer: Customer, private movies: Movie[]) {}
 
-  execute() {
-    return new Rent(
-      1,
-      {
-        id: 1,
-        name: this.customer.name,
-        document: this.customer.document,
-      },
-      []
-    );
+  execute(): Rent {
+    this.movies.forEach((movie) => {
+      if (!movie.available) {
+        throw new Error(`Movie ${movie.title} is not available for rent`);
+      }
+    });
+
+    return new Rent(1, this.customer, this.movies);
   }
 }
+

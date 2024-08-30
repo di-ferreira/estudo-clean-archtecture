@@ -5,3 +5,4 @@ export default class Customer {
     readonly document: string
   ) {}
 }
+
