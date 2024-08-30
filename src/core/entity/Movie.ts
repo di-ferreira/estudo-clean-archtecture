@@ -1,9 +1,22 @@
 export default class Movie {
+  available: boolean = true;
   constructor(
     readonly id: number,
     readonly title: string,
-    readonly quantity: number,
-    readonly price: number,
-    readonly available: boolean
-  ) {}
+    public quantity: number,
+    readonly price: number
+  ) {
+    this.available = this.verifyAvailable();
+  }
+
+  private verifyAvailable(): boolean {
+    let result: boolean = false;
+
+    if (this.quantity === 0) {
+      result = true;
+    }
+
+    return result;
+  }
 }
+
