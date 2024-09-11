@@ -30,14 +30,15 @@ describe('CustomerRentMovie Use Case', () => {
     customer = new Customer(1, 'John', '123.456.789-00');
     movies = [
       new Movie(1, 'Back to the Future', 2, 5.5),
-      new Movie(2, 'The Matrix', 4, 4.0), // out of stock
+      new Movie(2, 'The Matrix', 1, 4.0),
+      new Movie(3, 'Day off Ferris Bueller', 0, 3.85),
     ];
   });
 
   it('should customer rent available movies', () => {
     const rentMovie = new CustomerRentMovie(
       customer,
-      [movies[0]],
+      [movies[1]],
       repositoryMovie
     );
     const rentedMovie = rentMovie.execute();
@@ -45,18 +46,18 @@ describe('CustomerRentMovie Use Case', () => {
     expect(rentedMovie).toBeInstanceOf(Rent);
     expect(rentedMovie.customer).toEqual(customer);
     expect(rentedMovie.movies.length).toBe(1);
-    expect(rentedMovie.total).toEqual(5.5);
+    expect(rentedMovie.total).toEqual(movies[1].price);
   });
 
   it('should throw an error if no movies are available', () => {
     const rentMovie = new CustomerRentMovie(
       customer,
-      [movies[1]],
+      [movies[2]],
       repositoryMovie
     );
 
     expect(() => rentMovie.execute()).toThrow(
-      'Movie The Matrix is not available for rent'
+      `Movie ${movies[2].title} is not available for rent`
     );
   });
 
@@ -65,6 +66,33 @@ describe('CustomerRentMovie Use Case', () => {
     const rentMovie = new CustomerRentMovie(customer, [movie], repositoryMovie);
     const rentedMovie = rentMovie.execute();
     expect(rentedMovie.movies[0].quantity).toEqual(0);
+  });
+
+  it('should calculate total rent two movies', () => {
+    const movie = movies[0];
+    const movie2 = movies[1];
+    const rentMovie = new CustomerRentMovie(
+      customer,
+      [movie, movie2],
+      repositoryMovie
+    );
+    const rentedMovie = rentMovie.execute();
+    expect(rentedMovie.movies.length).toEqual(2);
+    expect(rentedMovie.total).toEqual(movie.price + movie2.price);
+  });
+
+  it('should return delivery date now +1', () => {
+    const nowDate = new Date();
+    const deliverDate = nowDate.setDate(nowDate.getDate() + 1);
+    const movie = movies[0];
+    const movie2 = movies[1];
+    const rentMovie = new CustomerRentMovie(
+      customer,
+      [movie, movie2],
+      repositoryMovie
+    );
+    const rentedMovie = rentMovie.execute();
+    expect(rentedMovie.deliver_date).toEqual(deliverDate);
   });
 });
 

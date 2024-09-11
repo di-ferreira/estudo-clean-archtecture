@@ -22,7 +22,7 @@ export default class Rent {
     return this.movies.reduce((total, movie) => total + movie.price, 0);
   }
 
-  deliver() {
+  private deliver() {
     this.deliver_date = new Date();
   }
 }
